@@ -31,11 +31,21 @@ void MinHeap<T>::insert(T data) {
 
 template <typename T>
 T MinHeap<T>::deleteMin() {
+    // Check if the heap is empty, throw an exception if true
     if (heap.empty()) throw std::underflow_error("Heap is empty");
+    
+    // Store the minimum element (the root of the heap) to return later
     T minElement = heap[0];
+    
+    // Replace the root (min element) with the last element in the heap
     heap[0] = heap.back();
+    
+    // Remove the last element from the heap (since it's now at the root)
     heap.pop_back();
+    
+    // Restore the Min-Heap property by adjusting the heap starting from the root
     adjustHeap(0);
+    
     return minElement;
 }
 
@@ -61,14 +71,28 @@ void MinHeap<T>::swap(T* a, T* b) {
 
 template <typename T>
 void MinHeap<T>::adjustHeap(int currentIndex) {
+    // Get the size of the heap
     int size = heap.size();
+    
+    // Calculate the indices of the left and right children
     int leftChild = 2 * currentIndex + 1;
     int rightChild = 2 * currentIndex + 2;
-    int smallest = currentIndex;
-    if (leftChild < size && heap[leftChild] < heap[smallest]) smallest = leftChild;
-    if (rightChild < size && heap[rightChild] < heap[smallest]) smallest = rightChild;
-    if (smallest != currentIndex) {
-        swap(&heap[currentIndex], &heap[smallest]);
-        adjustHeap(smallest);
+    
+    // Initialize 'min' as the current index (assuming the current node is the smallest)
+    int min = currentIndex;
+    
+    // If the left child exists and is smaller than the current node, update 'min'
+    if (leftChild < size && heap[leftChild] < heap[min]) 
+        min = leftChild;
+    
+    // If the right child exists and is smaller than the current 'min', update 'min'
+    if (rightChild < size && heap[rightChild] < heap[min]) 
+        min = rightChild;
+    
+    // If the smallest element is not the current node, swap and recursively adjust the heap
+    if (min != currentIndex) {
+        swap(&heap[currentIndex], &heap[min]); // Swap current node with the smallest child
+        adjustHeap(min);  // Recursively adjust the subtree rooted at 'min'
     }
 }
+
